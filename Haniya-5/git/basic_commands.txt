@@ -1,0 +1,34 @@
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
+
+
+-- to start new repo
+git init
+
+
+-- to clone existing repo
+git clone <repo_url>
+
+
+-- add file
+git add file.txt
+
+
+-- add all files
+git add .
+
+
+-- to commit the change
+git commit -m "your message"
+
+
+-- connect with github repo
+git remote add origin <repo_url>
+
+
+-- push code to github
+git push -u origin main
+
+
+-- to bring new changes
+git pull origin main
