@@ -32,3 +32,6 @@ git push -u origin main
 
 -- to bring new changes from origin repo
 git pull origin main
+
+<in case of auth issue>
+git remote set-url origin https://<YOUR-GITHUB-TOKEN>@github.com/username/repo.git
