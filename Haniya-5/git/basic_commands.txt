@@ -30,5 +30,5 @@ git remote add origin <repo_url>
 git push -u origin main
 
 
--- to bring new changes
+-- to bring new changes from origin repo
 git pull origin main
