@@ -11,14 +11,25 @@
 
 -- Q1: What data type would you use for a product's weight (e.g., 2.5 kg)?
 
+weight decimal(5,3)  12345.999
+
+
 -- Q2: In the sales.stores table, the zip_code is VARCHAR(5). Why not use INT?
+
 
 -- Q3: Look at sales.orders.order_status. The comment says 1=Pending,2=Processing,3=Rejected,4=Completed.
 --     Is TINYINT a good choice? Why not use INT?
 
+select * from [sales].[orders]
+--yes, tinyint is a good choice
+
+
 -- Q4: If you add a CHECK constraint that rating must be BETWEEN 1 AND 5, what happens if you try to INSERT rating = 0?
 
+
 -- Q5: Why does sales.staffs have UNIQUE constraint on email but not on phone?
+
+
 
 -- ================================================================================
 -- SECTION B: DDL (CREATE, ALTER, DROP)
@@ -31,14 +42,44 @@
 --     - start_date (DATE, NOT NULL, DEFAULT GETDATE())
 --     - end_date (DATE, NULL)
 
+CREATE TABLE sales.loyalty_programs (
+    program_id INT IDENTITY(1,1) NOT NULL,
+    program_name VARCHAR(100) NOT NULL UNIQUE,
+    
+    discount_rate DECIMAL(3,2) NOT NULL
+        DEFAULT 0.05
+        CHECK (discount_rate BETWEEN 0.00 AND 0.50),
+
+    start_date DATE NOT NULL DEFAULT GETDATE(),
+    end_date DATE NOT NULL DEFAULT GETDATE()
+);
+
+
 -- Q7: Add a new column 'loyalty_program_id' (INT, NULL) to the sales.customers table.
+
+    alter table sales.customers
+    add [loyalty_program_id] INT null;
+
+
 
 -- Q8: Add a FOREIGN KEY constraint to sales.customers.loyalty_program_id that references 
 --     sales.loyalty_programs.program_id.
+        
+
 
 -- Q9: Change the data type of sales.customers.zip_code from VARCHAR(5) to VARCHAR(10).
 
+    ALTER TABLE sales.customers
+    ALTER COLUMN zip_code VARCHAR(10);
+
 -- Q10: Drop the column 'birth_date' from sales.customers (first add it if it doesn't exist, then drop it).
+
+   alter table sales.customers
+   add birth_date date null;
+
+
+   alter table sales.customers
+   drop column  birth_date
 
 -- Q11: Create a new table production.product_reviews with appropriate columns and constraints:
 --      - review_id (PK, auto-increment)
@@ -54,7 +95,19 @@
 
 -- Q12: Insert a new brand called 'Santa Cruz' into production.brands.
 
+SET IDENTITY_INSERT production.brands on;
+        
+        INSERT INTO production.brands
+        (BRAND_ID, BRAND_NAME)
+        VALUES (9, 'Trek')
+
+        SELECT * FROM production.brands;
 -- Q13: Insert three new categories at once: 'Mountain', 'Road', 'Hybrid'.
+ SELECT * FROM production.categories;
+ INSERT INTO production.categories
+ (category_name)
+ VALUES ('Mountain'), ('Road'), ('Hybrid')
+        
 
 -- Q14: Insert a new product with the following details:
 --      product_name = 'Santa Cruz Bronson'
@@ -118,4 +171,4 @@
 
 -- ================================================================================
 -- END OF HOMEWORK QUESTIONS
--- ================================================================================
+-- ================================================================================E
