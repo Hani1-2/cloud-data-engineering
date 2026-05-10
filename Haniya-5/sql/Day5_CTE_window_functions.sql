@@ -1,22 +1,22 @@
-================================================================================
-CLASS 5: CTEs, PIVOT, EXPRESSIONS & WINDOW FUNCTIONS (Beginners Edition)
-Duration: 3 Hours
-Database: BikeStores Sample Database
-Prerequisites: Basic SELECT, WHERE, JOIN, GROUP BY
-================================================================================
+--================================================================================
+--CLASS 5: CTEs, PIVOT, EXPRESSIONS & WINDOW FUNCTIONS (Beginners Edition)
+--Duration: 3 Hours
+--Database: BikeStores Sample Database
+--Prerequisites: Basic SELECT, WHERE, JOIN, GROUP BY
+--================================================================================
 
 
-PART 1: CASE Expressions 
+--PART 1: CASE Expressions 
 ------------------------------------------------
 
-**Basic Structure:**
-CASE
-    WHEN condition1 THEN result1
-    WHEN condition2 THEN result2
-    ELSE default_result
-END
+--**Basic Structure:**
+--CASE
+--    WHEN condition1 THEN result1
+--    WHEN condition2 THEN result2
+--    ELSE default_result
+--END
 
-**Example 1: Convert numbers to words (Super Simple)**
+--**Example 1: Convert numbers to words (Super Simple)**
 -- Order status in BikeStores is stored as 1,2,3,4
 -- Let's make it readable:
 
@@ -32,7 +32,7 @@ SELECT
     END AS status_description
 FROM sales.orders;
 
-**Example 2: Price categories (Very Simple)**
+--**Example 2: Price categories (Very Simple)**
 SELECT 
     product_name,
     list_price,
@@ -44,7 +44,7 @@ SELECT
     END AS price_tier
 FROM production.products;
 
-**Example 3: Simple CASE (when checking one column for equality)**
+-- **Example 3: Simple CASE (when checking one column for equality)**
 -- Shortcut for when you're checking a single column:
 SELECT 
     product_name,
@@ -55,6 +55,7 @@ SELECT
         ELSE 'Older Model'
     END AS year_category
 FROM production.products;
+
 
 
 
@@ -114,7 +115,12 @@ FROM production.products;
 -- AVG(column) OVER (PARTITION BY group_column)
 
 -- Example 1: Compare each product to its brand average 
-
+ SELECT 
+    product_name,
+    brand_id,
+    list_price,
+    AVG(list_price) OVER (PARTITION BY brand_id) AS brand_average_price
+FROM production.products;
 
 -- Now you can see each product's price vs its brand's average!
 
