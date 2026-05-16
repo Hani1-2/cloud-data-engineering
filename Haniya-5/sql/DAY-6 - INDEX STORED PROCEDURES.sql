@@ -1,6 +1,43 @@
 -- to add index on table
 CREATE INDEX [index_name] ON [tablename](column_name);
 
+CREATE INDEX idx_customer_name ON sales.customers(first_name);
+
+
+select * from [sales].[customers]
+where last_name = 'Fisher';
+
+EXEC sp_helpindex 'sales.customers';
+
+-- Create index on multiple columns (composite index)
+
+CREATE INDEX idx_customer_name_state ON sales.customers(first_name, state);
+select * from [sales].[customers]
+where first_name = 'Tam' and state = 'NY';
+
+
+select * from [sales].[orders]
+
+-- Create unique index (no duplicates allowed)
+CREATE UNIQUE INDEX idx_customer_EMAIL ON sales.customers(email);
+
+
+-- Q: Should you index a "gender" column (M/F only)?
+-- NO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 -- to find indexes on tables
 EXEC sp_helpindex [Tablename];
 
@@ -44,6 +81,19 @@ WHERE city like 'St%';
 -- STORED PROCEDURES
 -- SAVE A sql SCRIPT AND USE IT REPEATEDLY
 
+ --CREATE PROCEDURE procedure_name
+ --AS
+ --BEGIN
+ --    Your SQL code here
+ --END;
+
+
+
+
+
+
+
+
 -- 
 -- **Basic Syntax:**
 -- CREATE PROCEDURE procedure_name
@@ -53,47 +103,64 @@ WHERE city like 'St%';
 -- END;
 
 
--- -- Create a procedure that shows all expensive products
+ -- Create a procedure that shows all expensive products
 
 --**Example 2: Stored Procedure with Parameters (Customizable!)**
 -- Parameters are like "ingredients" you can change each time
---CREATE PROCEDURE procedure_name
---    @MinPrice DECIMAL(10,2),
---    @MaxPrice DECIMAL(10,2)
---AS
---BEGIN
---    SELECT product_name, list_price
---    FROM production.products
---    WHERE list_price BETWEEN @MinPrice AND @MaxPrice
---    ORDER BY list_price;
--- END;
+CREATE PROCEDURE proc_expensive_products
+    @MinPrice DECIMAL(10,2),
+    @MaxPrice DECIMAL(10,2)
+AS
+BEGIN
+    SELECT product_name, list_price
+    FROM production.products
+    WHERE list_price BETWEEN @MinPrice AND @MaxPrice
+    ORDER BY list_price;
+ END;
 
 
--- exec procedure_name parameter 1, parameter 2
+exec proc_expensive_products 2000, 20000
 
---CREATE PROCEDURE sp_UpdateProductPrice
---@ProductID INT,
---@NewPrice DECIMAL(10,2)
---AS
---BEGIN
----- Check if product exists
---IF EXISTS (SELECT 1 FROM production.products WHERE product_id = @ProductID)
---BEGIN
---    UPDATE production.products
---    SET list_price = @NewPrice
---    WHERE product_id = @ProductID;
+CREATE PROCEDURE sp_UpdateProductPrice
+@ProductID INT,
+@NewPrice DECIMAL(10,2)
+AS
+BEGIN
+-- Check if product exists
+IF EXISTS (SELECT 1 FROM production.products WHERE product_id = @ProductID)
+BEGIN
+    UPDATE production.products
+    SET list_price = @NewPrice
+    WHERE product_id = @ProductID;
         
---    SELECT 'Product updated successfully' AS Message;
---END
---ELSE
---BEGIN
---    SELECT 'Product not found' AS Message;
---END
---END;
+    SELECT 'Product Price updated successfully' AS Message;
+END
+ELSE
+BEGIN
+    SELECT 'Product not found' AS Message;
+END
+END;
 
+--exec sp_UpdateProductPrice 2,850
 -- Get customer order history (PARAMETER CUSTOMER_ID)
 
--- -- 2. Restock alert (products with low inventory) (SET DEFAULT THRESHOLD 10)
+--  2. Restock alert (products with low inventory) (SET DEFAULT THRESHOLD 10)
+ CREATE PROCEDURE sp_restock_product
+    @threshold int = 10
+ AS
+ BEGIN
+     select p.product_name, o.quantity
+     from [sales].[order_items] o
+     inner join [production].[products] p
+     on o.product_id = p.product_id
+     where quantity < @threshold
+ END;
+
+
+exec [dbo].[sp_restock_product] 2
+
+
+
 
 -- ALTER PROCEDURE
 -- DROP PROCEDURE
@@ -112,4 +179,3 @@ WHERE city like 'St%';
 --| ORDER BY column | Consider index on that column |
 --| Small table (<1000 rows) | Skip indexes |
 --| Frequent updates | Fewer indexes |
-
